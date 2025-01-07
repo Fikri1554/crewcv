@@ -67,22 +67,34 @@ class Dashboard extends CI_Controller {
 
 	function getCrewOnLeave()
 	{
-		$total = 0;
-
-		$sql = "SELECT COUNT(A.idperson)
-				FROM mstpersonal A
-				LEFT JOIN tblcontract B ON A.idperson = B.idperson
-				LEFT JOIN tblkota C ON A.pob = C.KdKota
-				WHERE A.deletests = '0' AND B.deletests = '0' AND A.inAktif  = '0' AND A.inBlacklist='0'
-				AND B.idcontract IN (SELECT MAX(idcontract) FROM tblcontract WHERE idperson=B.idperson AND deletests=0)
-				AND (B.signoffdt != '0000-00-00' AND B.signoffdt <= CURDATE( ))
-				GROUP BY A.idperson";
-		$rsl = $this->MCrewscv->getDataQuery($sql);
-
-		$total = count($rsl);
-
-		return $total;
+		$sql = "SELECT COUNT(*) AS total_crew_on_leave
+				FROM (
+					SELECT A.idperson
+					FROM mstpersonal A
+					LEFT JOIN tblcontract B ON A.idperson = B.idperson
+					LEFT JOIN tblkota C ON A.pob = C.KdKota
+					WHERE A.deletests = '0' 
+					AND B.deletests = '0' 
+					AND A.inAktif = '0' 
+					AND A.inBlacklist = '0'
+					AND B.idcontract IN (
+						SELECT MAX(idcontract) 
+						FROM tblcontract 
+						WHERE idperson = B.idperson 
+						AND deletests = 0
+					)
+					AND (B.signoffdt != '0000-00-00' AND B.signoffdt <= CURDATE())
+					GROUP BY A.idperson
+				) AS crew_on_leave";
+		
+		$result = $this->MCrewscv->getDataQuery($sql);
+		if (!empty($result) && isset($result[0]->total_crew_on_leave)) {
+			return $result[0]->total_crew_on_leave;
+		} else {
+			return 0;
+		}
 	}
+
 
 	function getCrewNonAktif()
 	{
@@ -149,6 +161,59 @@ class Dashboard extends CI_Controller {
 
 		return $total;
 	}
+
+	function getDetailOnLeave()
+	{
+		$dataContext = new DataContext();
+		$dataOut = array();
+		$trNya = "";
+		$no = 1;
+		$ttlCrewOnLeave = $this->getCrewOnLeave(); 
+		$crewData = $dataContext->getCrewOnLeaveByRank(); 
+
+		$ranks = $dataContext->getDataRank();
+
+		$rankOrder = array();
+		foreach ($ranks as $rank) {
+			$rankOrder[] = $rank->nmrank;
+		}
+		$mappedCrewByRank = array();
+		foreach ($crewData as $crew) {
+			if (isset($crew->nmrank)) {
+				$mappedCrewByRank[$crew->nmrank][] = $crew->crew_name;
+			} else {
+				$mappedCrewByRank['No Rank'][] = $crew->crew_name;
+			}
+		}
+		foreach ($rankOrder as $rank) {
+			if (isset($mappedCrewByRank[$rank])) {
+				$crewNames = implode('<br>', $mappedCrewByRank[$rank]);
+			} else {
+				$crewNames = '';
+			}
+			$crewNamesWithButton = '';
+			if (!empty($crewNames)) {
+				foreach ($mappedCrewByRank[$rank] as $crew) {
+					$crewNamesWithButton .= "<div style='display: flex; justify-content: space-between;'>";
+					$crewNamesWithButton .= "<span style='float: left;'>" . $crew . "</span>";
+					$crewNamesWithButton .= "<button class='btn btn-info btn-xs' onclick=\"getDetailCrewName('" . $crew . "')\">Detail</button>";
+					$crewNamesWithButton .= "</div><br>";
+				}
+			}
+			$trNya .= "<tr>";
+			$trNya .= "<td align=\"center\" style=\"font-size:11px;\">" . $no . "</td>";
+			$trNya .= "<td style=\"font-size:11px;\">" . $rank . "</td>";
+			$trNya .= "<td style=\"font-size:11px;\">" . $crewNamesWithButton . "</td>";  
+			$trNya .= "</tr>";
+			$no++;
+		}
+
+		$dataOut['trNya'] = $trNya;
+		$dataOut['totalCrew'] = number_format($ttlCrewOnLeave, 0) . " Crew";
+
+		print json_encode($dataOut);
+	}
+
 
 	function getDetailOnBoard()
 	{

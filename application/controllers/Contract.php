@@ -89,6 +89,7 @@ class Contract extends CI_Controller {
 				{
 					foreach ($value as $key => $val)
 					{
+						
 						$bintang = "";
 						$warning = "";
 
@@ -134,19 +135,20 @@ class Contract extends CI_Controller {
 						}
 
 						$tempTr .= "<tr>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;background-color:#5bc0de;\">".$no."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;\">".$val['nmrank']."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;\">".$val['fullName']."&nbsp".$bintang.$warning."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;\">".$val['NmNegara']."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;\">".$dataContext->convertReturnName($val['dob'])."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;\">".$val['lastvsl']."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;\">".$dataContext->convertReturnName($val['signondt'])."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;\">".$dataContext->convertReturnName($val['signoffdt'])."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;\">".$dataContext->convertReturnName($val['estsignoffdt'])."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;\">".$val['certName']['certPanama']."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;\">".$val['certName']['certOther']."</td>";
-							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;\">".$btnAct."</td>";
+							$tempTr .= "<td style=\"background-color:#5bc0de;font-size:11px;text-align:center;width:5%;\">".$no."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;width:10%;\">".$val['nmrank']."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;width:15%;\">".$val['fullName']."&nbsp".$bintang.$warning."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;width:10%;\">".$val['NmNegara']."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;width:10%;\">".$dataContext->convertReturnName($val['dob'])."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;width:10%;\">".$val['lastvsl']."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;width:10%;\">".$dataContext->convertReturnName($val['signondt'])."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;width:10%;\">".$dataContext->convertReturnName($val['signoffdt'])."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:center;width:10%;\">".$dataContext->convertReturnName($val['estsignoffdt'])."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;width:10%;\">".$val['certName']['certPanama']."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;width:10%;\">".$val['certName']['certOther']."</td>";
+							$tempTr .= "<td style=\"background-color:#D7EAEC;font-size:11px;text-align:left;width:10%;\">".$btnAct."</td>";
 						$tempTr .= "</tr>";
+
 						
 						$no++;
 
@@ -154,13 +156,14 @@ class Contract extends CI_Controller {
 				}
 
 				$trNya .= "<tr>";
-					$trNya .= "<td style=\"background-color:#5bc0de;\" colspan=\"12\">";
+					$trNya .= "<td style=\"background-color:#5bc0de;\" colspan=\"24\">";
 						$trNya .= "<b><i>:: ON BOARD ::</i> ( ".number_format($no-1,0)." Data ) || </b>";
 						$trNya .= "<label style=\"color:#E10303;\">* (Will expire), ** (Over due)</label>";
 					$trNya .= "</td>";
 				$trNya .= "</tr>";
 				$trNya .= $tempTr;
 			}
+			
 			if($status == "onleave"  OR $status == "all")
 			{
 				$tempTr = "";
@@ -212,9 +215,10 @@ class Contract extends CI_Controller {
 					$no++;
 				}
 
-				$trNya .= "<tr><td style=\"background-color:#5CB85C;color:#FFF;\" colspan=\"10\"><b><i>:: ON LEAVE ::</i> ( ".number_format($no-1,0)." Data ) </b></td></tr>";
+				$trNya .= "<tr><td style=\"background-color:#5CB85C;color:#FFF;\" colspan=\"24\"><b><i>:: ON LEAVE ::</i> ( ".number_format($no-1,0)." Data ) </b></td></tr>";
 				$trNya .= $tempTr;
 			}
+			
 			if($status == "nonaktif" OR $status == "all")
 			{
 				$tempTr = "";
@@ -268,7 +272,7 @@ class Contract extends CI_Controller {
 					$no++;
 				}
 
-				$trNya .= "<tr><td style=\"background-color:#F0AD4E;\" colspan=\"10\"><b><i>:: NON AKTIF ::</i> ( ".number_format($no-1,0)." Data ) </b></td></tr>";
+				$trNya .= "<tr><td style=\"background-color:#F0AD4E;\" colspan=\"24\"><b><i>:: NON AKTIF ::</i> ( ".number_format($no-1,0)." Data ) </b></td></tr>";
 				$trNya .= $tempTr;
 			}
 			if($status == "notforemp"  OR $status == "all")// blacklist
@@ -324,12 +328,12 @@ class Contract extends CI_Controller {
 					$no++;
 				}
 
-				$trNya .= "<tr><td style=\"background-color:#D9534F;color:#FFF;\" colspan=\"10\"><b><i>:: NOT FOR EMP ::</i> ( ".number_format($no-1,0)." Data ) </b></td></tr>";
+				$trNya .= "<tr><td style=\"background-color:#D9534F;color:#FFF;\" colspan=\"24\"><b><i>:: NOT FOR EMP ::</i> ( ".number_format($no-1,0)." Data ) </b></td></tr>";
 				$trNya .= $tempTr;
 			}			
 			
 		}else{
-			$trNya = "<tr><td style=\"text-align:center;font-weight:bold;\" colspan=\"12\">- Select Status -</td></tr>";
+			$trNya = "<tr><td style=\"text-align:center;font-weight:bold;\" colspan=\"24\">- Select Status -</td></tr>";
 		}
 
 		$dataOut['trNya'] = $trNya;
@@ -869,17 +873,19 @@ class Contract extends CI_Controller {
 		$sql = "SELECT * FROM tblcertdoc WHERE deletests = '0' AND idperson = '".$idPerson."' ORDER BY idcertdoc ASC ";
 		$rsl = $this->MCrewscv->getDataQuery($sql);
 
+		$hasCertifiedPanama = false; 
+
 		if(count($rsl) > 0)
 		{
 			foreach ($rsl as $key => $val)
 			{
-				if($val->kdnegara == '021') // 021 = panama
-				{
+				if ($val->kdnegara == '021') { 
+					
 					$tempData['panama'][$keyNo]['certName'] = $val->certname;
 					$tempData['panama'][$keyNo]['issDate'] = $val->issdate;
 					$tempData['panama'][$keyNo]['expDate'] = $val->expdate;
 					$tempData['panama'][$keyNo]['certFile'] = $val->certificate_file;
-				}else{
+				} else {
 					$tempData['other'][$keyNo]['certName'] = $val->certname;
 					$tempData['other'][$keyNo]['issDate'] = $val->issdate;
 					$tempData['other'][$keyNo]['expDate'] = $val->expdate;
@@ -921,7 +927,7 @@ class Contract extends CI_Controller {
 				}
 			}
 
-			foreach ($tempData['other'] as $key => $val)
+			foreach ($tempData['other'] as $key => $val)		
 			{
 				$issDate = $dataContext->convertReturnName($val['issDate']);
 				$expDate = $dataContext->convertReturnName($val['expDate']);

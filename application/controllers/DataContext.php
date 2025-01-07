@@ -509,6 +509,67 @@ class DataContext extends CI_Controller {
 		}
 	}
 
+	function getDataRank()
+	{
+		$dataOut = array();
+		$whereNya = " WHERE Deletests = '0' AND nmrank != '' ";
+		$sql = "SELECT * FROM mstrank ".$whereNya." ORDER BY urutan ASC";
+		
+		$rsl = $this->MCrewscv->getDataQuery($sql);
+
+		if (!empty($rsl)) {
+			$dataOut = $rsl;
+		}
+
+		return $dataOut;
+	}
+
+	function getCrewOnLeaveByRank() 
+	{
+		$sqlRanks = "SELECT kdrank, nmrank
+					FROM mstrank 
+					WHERE Deletests = '0' 
+					AND nmrank != '' 
+					ORDER BY urutan ASC 
+					LIMIT 51";
+		$ranks = $this->MCrewscv->getDataQuery($sqlRanks);
+
+		
+		$rankCodes = array();
+		foreach ($ranks as $rank) {
+			$rankCodes[] = $rank->kdrank;
+		}
+
+		if (empty($rankCodes)) {
+			return array(); 	
+		}
+
+		$rankPlaceholders = implode(',', $rankCodes);  
+		
+		$sqlCrewOnLeave = "SELECT A.idperson, CONCAT(A.fname, ' ', IFNULL(A.mname, ''), ' ', A.lname) AS crew_name, 
+							RANK.nmrank
+						FROM mstpersonal A
+						LEFT JOIN tblcontract B ON A.idperson = B.idperson
+						LEFT JOIN mstrank RANK ON B.signonrank = RANK.kdrank
+						WHERE A.deletests = '0' 
+						AND B.deletests = '0' 
+						AND A.inAktif = '0' 
+						AND A.inBlacklist = '0'
+						AND B.idcontract IN (
+							SELECT MAX(idcontract) 
+							FROM tblcontract 
+							WHERE idperson = B.idperson 
+							AND deletests = 0
+						)
+						AND (B.signoffdt != '0000-00-00' AND B.signoffdt <= CURDATE())  
+						AND RANK.kdrank IN ($rankPlaceholders) 
+						ORDER BY FIELD(RANK.kdrank, $rankPlaceholders)"; 
+		return $this->MCrewscv->getDataQuery($sqlCrewOnLeave);  
+	}
+
+
+
+
 	function getVessel()
 	{
 		$dataOut = array();
